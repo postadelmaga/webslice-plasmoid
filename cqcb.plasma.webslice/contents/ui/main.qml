@@ -16,7 +16,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
-
 import QtQuick 2.0
 import QtWebKit 3.0
 import QtQuick.Layouts 1.1
@@ -25,10 +24,13 @@ import QtWebKit.experimental 1.0
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
+import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.extras 2.0 as PlasmaExtras
+
 Item {
     id: main
-    //property alias mainWebview: webview.url
 
+    //property alias mainWebview: webview.url
     property string websliceUrl: plasmoid.configuration.websliceUrl
     property bool enableReload: plasmoid.configuration.enableReload
     property int reloadIntervalSec: plasmoid.configuration.reloadIntervalSec
@@ -45,48 +47,68 @@ Item {
 
     Layout.fillWidth: true
     Layout.fillHeight: true
+    Layout.minimumWidth: 650
+    Layout.minimumHeight: 650
 
 
-    Plasmoid.preferredRepresentation: (displaySiteBehaviour)? Plasmoid.fullRepresentation : Plasmoid.compactRepresentation
+    Plasmoid.preferredRepresentation: (displaySiteBehaviour) ? Plasmoid.fullRepresentation : Plasmoid.compactRepresentation
 
-
-    WebView {
-        id: webview
-        url: websliceUrl
+    PlasmaExtras.ScrollArea {
         anchors.fill: parent
-        experimental.preferredMinimumContentsWidth: minimumContentWidth
-        experimental.transparentBackground: enableTransparency
-
-        onLoadingChanged: {
-            if (enableJSID && loadRequest.status === WebView.LoadSucceededStatus) {
-                experimental.evaluateJavaScript(
-                    jsSelector + ".scrollIntoView(true);");
-            }
-            if (enableJS && loadRequest.status === WebView.LoadSucceededStatus) {
-                experimental.evaluateJavaScript(js);
-            }
-            if (loadRequest.status === WebView.LoadSucceededStatus) {
-                busyIndicator.visible = false;
-                busyIndicator.running = false;
-            }
-        }
-
-        onNavigationRequested: {
-            //console.debug ("NavigationRequested: " + request.url + " navigationType=" + request.navigationType + " " + WebView.LinkClickedNavigation + " mouse:"+ request.mouseButton + " " + Qt.MiddleButton)
-            //console.debug(request.keyboardModifiers + " " + Qt.ControlModifier + " " + request)
-            if (request.navigationType == WebView.LinkClickedNavigation && (request.keyboardModifiers == Qt.ControlModifier || request.mouseButton == Qt.MiddleButton)) {
-                //console.debug ("*************** yeah ************");
-                request.action = WebView.IgnoreRequest;
-                Qt.openUrlExternally(request.url);
-            }
-        }
-
-        MouseArea {
+        WebView {
+            id: webview
+            url: websliceUrl
             anchors.fill: parent
-            acceptedButtons: Qt.RightButton
-            onClicked: {
-                if (mouse.button & Qt.RightButton) {
-                    contextMenu.open(mapToItem(webview, mouseX, mouseY).x, mapToItem(webview, mouseX, mouseY).y)
+            scale: 1
+            experimental.preferredMinimumContentsWidth: minimumContentWidth
+            experimental.transparentBackground: enableTransparency
+            experimental.userAgent: "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25"
+
+            experimental.preferences.navigatorQtObjectEnabled: true
+
+
+            onLoadingChanged: {
+                if (enableJSID
+                        && loadRequest.status === WebView.LoadSucceededStatus) {
+                    experimental.evaluateJavaScript(
+                                jsSelector + ".scrollIntoView(true);")
+                }
+                if (enableJS
+                        && loadRequest.status === WebView.LoadSucceededStatus) {
+                    experimental.evaluateJavaScript(js)
+                }
+                if (loadRequest.status === WebView.LoadSucceededStatus) {
+                    busyIndicator.visible = false
+                    busyIndicator.running = false
+                }
+            }
+
+            onNavigationRequested: {
+                // Workaround for torrent
+
+                if (request.url.toString().indexOf('magnet') !== -1) {
+                    request.action = WebView.IgnoreRequest
+                    Qt.openUrlExternally(request.url)
+                    console.debug(
+                                "*************** this is a magnet link ************")
+                }
+                if (request.navigationType == WebView.LinkClickedNavigation
+                        && (request.keyboardModifiers == Qt.ControlModifier
+                            || request.mouseButton == Qt.MiddleButton)) {
+
+                    request.action = WebView.IgnoreRequest
+                    Qt.openUrlExternally(request.url)
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.RightButton
+                onClicked: {
+                    if (mouse.button & Qt.RightButton) {
+                        contextMenu.open(mapToItem(webview, mouseX, mouseY).x,
+                                         mapToItem(webview, mouseX, mouseY).y)
+                    }
                 }
             }
         }
@@ -113,6 +135,12 @@ Item {
             text: i18n('Reload')
             icon: 'view-refresh'
             onClicked: reload()
+        }
+
+        PlasmaComponents.MenuItem {
+            text: i18n('test')
+            icon: 'view-refresh'
+            onClicked: print_title()
         }
 
         PlasmaComponents.MenuItem {
@@ -145,10 +173,14 @@ Item {
     }
 
     function reload() {
-        if(reloadAnimation){
-            busyIndicator.visible = true;
-            busyIndicator.running = true;
+        if (reloadAnimation) {
+            busyIndicator.visible = true
+            busyIndicator.running = true
         }
-        webview.reload();
+        webview.reload()
+    }
+
+    function print_title(){
+         webview.experimental.evaluateJavaScript('document.getElementsByClassName("col-md-3")[0].remove();');
     }
 }

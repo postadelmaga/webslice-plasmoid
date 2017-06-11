@@ -7,7 +7,7 @@
 
     <group name="General">
         <entry name="websliceUrl" type="String">
-            <default>http://www.cqoicebordel.net</default>
+            <default>https://www.zooqle.com </default>
         </entry>
 		<entry name="enableReload" type="Bool">
             <default>false</default>
