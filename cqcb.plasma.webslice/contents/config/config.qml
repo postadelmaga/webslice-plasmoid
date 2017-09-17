@@ -9,7 +9,12 @@ ConfigModel {
     }
     ConfigCategory {
          name: i18n('Advanced')
-         icon: 'preferences-desktop-notification'
+         icon: 'preferences-system-windows'
          source: 'ConfigAdvanced.qml'
+    }
+    ConfigCategory {
+         name: i18n('Tweak')
+         icon: 'preferences-desktop-notification'
+         source: 'ConfigTweak.qml'
     }
 }

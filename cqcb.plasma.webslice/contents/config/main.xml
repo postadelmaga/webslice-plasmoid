@@ -6,29 +6,37 @@
     <kcfgfile name=""/>
 
     <group name="General">
-        <entry name="websliceUrl" type="String">
-            <default>https://www.zooqle.com </default>
+        <entry name="startUrl" type="String">
+            <default>https://burnoutitaly.atlassian.net/secure/Dashboard.jspa</default>
         </entry>
-		<entry name="enableReload" type="Bool">
+        <entry name="startZoom" type="Double">
+            <default>10</default>
+        </entry>
+        <entry name="enableTransparency" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="reloadAnimation" type="Bool">
+            <default>true</default>
+        </entry>
+    </group>
+    <group name="Advanced">
+        <entry name="displaySiteBehaviour" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="buttonBehaviour" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="enableReload" type="Bool">
             <default>false</default>
         </entry>
         <entry name="reloadIntervalSec" type="Int">
             <default>3600</default>
         </entry>
-		<entry name="enableTransparency" type="Bool">
-            <default>true</default>
-        </entry>
-		<entry name="displaySiteBehaviour" type="Bool">
-            <default>true</default>
-        </entry>
-		<entry name="buttonBehaviour" type="Bool">
-            <default>false</default>
-        </entry>
-		<entry name="reloadAnimation" type="Bool">
-            <default>true</default>
+        <entry name="userAgent" type="String">
+            <default>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36  </default>
         </entry>
     </group>
-	<group name="Advanced">
+	<group name="Tweak">
 		<entry name="enableJSID" type="Bool">
             <default>false</default>
         </entry>

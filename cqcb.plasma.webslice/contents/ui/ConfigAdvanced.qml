@@ -3,98 +3,86 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
 Item {
-	
-	property alias cfg_enableJSID: enableJSID.checked
-	property alias cfg_jsSelector: jsSelector.text
-	property alias cfg_minimumContentWidth: minimumContentWidth.value
-	property alias cfg_enableJS: enableJS.checked
-	property alias cfg_js: js.text
+    property alias cfg_userAgent: userAgent.text
+    property alias cfg_enableReload: enableReload.checked
+    property alias cfg_reloadIntervalSec: reloadIntervalSec.value
+    property alias cfg_displaySiteBehaviour: displaySiteBehaviour.checked
+    property alias cfg_buttonBehaviour: buttonBehaviour.checked
 
     property int textfieldWidth: theme.defaultFont.pointSize * 30
 
     GridLayout {
         columns: 3
 
+        Label {
+            text: i18n('Plasmoid behaviour :')
+            Layout.columnSpan: 3
+        }
+
+        GroupBox {
+            flat: true
+            Layout.columnSpan: 3
+
+            ColumnLayout {
+                ExclusiveGroup {
+                    id: behaviourGroup
+                }
+
+                RadioButton {
+                    id: displaySiteBehaviour
+                    text: i18n("Display the site")
+                    exclusiveGroup: behaviourGroup
+                }
+
+                RadioButton {
+                    id: buttonBehaviour
+                    text: i18n("Display a button that opens the site in a new panel")
+                    exclusiveGroup: behaviourGroup
+                }
+            }
+        }
+
+          Item {
+                    width: 3
+                    height: 25
+                }
+
+                Item {
+                    width: 3
+                    height: 25
+                }
+
         Text {
-            font.bold: true
-            text: i18n('Attention, modify with care and only if you know what you are doing.')
-            Layout.preferredWidth: 0
+            font.italic: true
+            text: i18n('Note that this behaviour will not be visible until the plasmoid is reloaded.')
             Layout.columnSpan: 3
+            //Layout.alignment: Qt.AlignLeft
         }
-
         CheckBox {
-            id: enableJSID
+            id: enableReload
             Layout.columnSpan: 3
-            text: i18n('Enable JS Scroll Into View')
+            text: i18n('Enable auto reload')
         }
-
-        Label {
-            text: i18n('JS Selector :')
-			enabled: enableJSID.checked
-			Layout.columnSpan: 1
+      Label {
+            text: i18n('Reload interval :')
         }
-
-        TextField {
-            id: jsSelector
-            placeholderText: 'document.getElementById("id")'
-            Layout.preferredWidth: textfieldWidth
-            enabled: enableJSID.checked
-            Layout.columnSpan: 2
-        }
-
-        Item {
-            Layout.columnSpan: 3
-            height: 25
-        }
-
-        Label {
-            text: i18n('Minimum Content width :')
-        }
-
         SpinBox {
-            id: minimumContentWidth
-            suffix: i18nc('Abbreviation for pixels', 'px')
-			minimumValue: 1
-			maximumValue: 10000
-			Layout.columnSpan: 1
-        }
-        
-        Text {
-            font.italic: true
-            text: i18n('(default : 100px)')
-            Layout.columnSpan: 1
-        }
-
-        Text {
-            font.italic: true
-            text: i18n('This option can help you trigger media queries, and may help with zoom.')
-            Layout.preferredWidth: 0
-            Layout.columnSpan: 3
-        }
-
-        Item {
-            width: 3
-            height: 25
-        }
-
-        CheckBox {
-            id: enableJS
-            Layout.columnSpan: 3
-            text: i18n('Enable personnalized JavaScript to be executed once the page is loaded')
+            id: reloadIntervalSec
+            suffix: i18nc('Abbreviation for seconds', 'sec')
+            enabled: enableReload.checked
+            minimumValue: 15
+            maximumValue: 360000
+            stepSize: 15
+            Layout.columnSpan: 2
         }
 
         Label {
-            text: i18n('Your JavaScript :')
-			enabled: enableJS.checked
+            text: i18n('User Agent :')
         }
-
-        TextArea {
-            id: js
-            width: 240
-            enabled: enableJS.checked
-            Layout.columnSpan: 2
+        TextField {
+            id: userAgent
+            placeholderText: 'User Agent'
+            Layout.preferredWidth: 520
         }
     }
-    
 }
- 

@@ -31,7 +31,9 @@ Item {
     id: main
 
     //property alias mainWebview: webview.url
-    property string websliceUrl: plasmoid.configuration.websliceUrl
+    property string startUrl: plasmoid.configuration.startUrl
+    property double startZoom: plasmoid.configuration.startZoom
+    property string userAgent: plasmoid.configuration.userAgent
     property bool enableReload: plasmoid.configuration.enableReload
     property int reloadIntervalSec: plasmoid.configuration.reloadIntervalSec
     property bool enableTransparency: plasmoid.configuration.enableTransparency
@@ -50,22 +52,20 @@ Item {
     Layout.minimumWidth: 650
     Layout.minimumHeight: 650
 
-
     Plasmoid.preferredRepresentation: (displaySiteBehaviour) ? Plasmoid.fullRepresentation : Plasmoid.compactRepresentation
 
     PlasmaExtras.ScrollArea {
         anchors.fill: parent
+
         WebView {
-            id: webview
-            url: websliceUrl
             anchors.fill: parent
-            scale: 1
+            id: webview
+            url: startUrl
+            scale: startZoom/10
             experimental.preferredMinimumContentsWidth: minimumContentWidth
             experimental.transparentBackground: enableTransparency
-            experimental.userAgent: "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25"
-
+            experimental.userAgent:userAgent
             experimental.preferences.navigatorQtObjectEnabled: true
-
 
             onLoadingChanged: {
                 if (enableJSID
